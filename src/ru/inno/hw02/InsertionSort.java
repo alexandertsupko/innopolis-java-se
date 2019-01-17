@@ -20,7 +20,7 @@ public class InsertionSort {
      *
      * @param a массив объектов класса {@code Integer}, который нужно отсортировать
      */
-    private static void sort(Integer[] a) {
+    public static void sort(Integer[] a) {
         for (int i = 1; i < a.length; i++) {
             for (int j = i; j > 0; j--) {
                 if (a[j - 1] > a[j]) {
@@ -36,10 +36,10 @@ public class InsertionSort {
 
     /**
      * Метод {@code isSorted(Integer[])} проверяет переданный ему массив на упорядоченность:
-     * он возвращает true, если массив отсортирован, и false, если массив не отсортирован.
+     * он возвращает <tt>true</tt>, если массив отсортирован, и <tt>false</tt>, если массив не отсортирован.
      *
      * @param a массив объектов класса {@code Integer}, который нужно проверить на упорядоченность
-     * @return логическое значение true, если массив отсортирован, и false в противном случае
+     * @return логическое значение <tt>true</tt>, если массив отсортирован, и <tt>false</tt> в противном случае
      */
     private static boolean isSorted(Integer[] a) {
         for (int i = 1; i < a.length; i++) {

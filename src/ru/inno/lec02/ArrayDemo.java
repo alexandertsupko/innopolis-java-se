@@ -1,4 +1,4 @@
-package ru.inno.lec01;
+package ru.inno.lec02;
 
 import java.util.Iterator;
 import java.util.Random;

@@ -37,15 +37,31 @@ public class TextFileGenerator {
             case 2:
                 sentence.append('!');
                 break;
-             default:
+            default:
         }
         sentence.append(' ');
         return sentence.toString();
     }
 
+    public static String generateParagraph() {
+        StringBuilder paragraph = new StringBuilder();
+        for (int i = 0, paragraph_length = (int) (Math.random() * 20) + 1; i < paragraph_length; i++) {
+            paragraph.append(generateSentence());
+        }
+        paragraph.append('\n').append('\r');
+        return paragraph.toString();
+    }
+
+    /**
+     * Тестирующий клиент.
+     *
+     * @param args аргументы командной строки
+     */
     public static void main(String[] args) {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 2; i++) {
+            System.out.println(generateWord());
             System.out.println(generateSentence());
+            System.out.println(generateParagraph());
         }
     }
 }

@@ -45,7 +45,7 @@ public class MathBox {
     /**
      * 4. Переопределение метода {@code toString()}, создающее удобочитаемый вывод содержимого коллекции.
      *
-     * @return строка, содержащее удобочитаемое представление содержимого коллекции
+     * @return строка, содержащая удобочитаемое представление содержимого коллекции
      */
     @Override
     public String toString() {
@@ -72,13 +72,13 @@ public class MathBox {
     }
 
     /**
-     * 4. Переопределение метода {@code hashCode()}, сформированное стандартными средствами.
+     * 4. Переопределение метода {@code hashCode()}, согласующееся с переопределением {@code equals(Object obj)}.
      *
      * @return значение типа {@code int}, использующееся для хранения объектов этого класса в подходящих коллекциях
      */
     @Override
     public int hashCode() {
-        return Objects.hash(set);
+        return 0; // Objects.hash(set); мы не можем основывать вычисление хэш-кода на коллекции
     }
 
     /**
@@ -118,7 +118,7 @@ public class MathBox {
          */
         StringBuilder stringBuilder = new StringBuilder("Содержимое после деления на " + divisor + ": [ ");
         for (double d : mathBox.splitter(divisor)) { // каждый элемент делится на переданный в аргументе делитель
-            stringBuilder.append(String.format(Locale.US,"%.1f", d)).append(' ');
+            stringBuilder.append(String.format(Locale.US, "%.1f", d)).append(' ');
         }
         System.out.println(stringBuilder.append(']'));
         /*

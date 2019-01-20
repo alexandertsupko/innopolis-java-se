@@ -1,16 +1,12 @@
 package ru.inno.hw02;
 
-import java.util.Random;
-
 /**
  * Класс {@code InsertionSort} использует алгоритм сортировки вставками для упорядочивания массива,
- * состоящего из объектов класса {@code Integer}, созданных генератором случайных чисел.
+ * состоящего из объектов класса {@code Integer}, созданных генератором псевдослучайных чисел.
  *
  * @author Александр Цупко
  */
 public class InsertionSort {
-    private static Random random = new Random(); // генератор случайных чисел
-
     /**
      * Метод {@code sort(Integer[])} использует алгоритм сортировки вставками:
      * он включает в себя два вложенных цикла, один из которых пробегает все элементы массива, начиная со второго,
@@ -20,7 +16,10 @@ public class InsertionSort {
      *
      * @param a массив объектов класса {@code Integer}, который нужно отсортировать
      */
-    public static void sort(Integer[] a) {
+    public void sort(Integer[] a) {
+        if (a == null) {
+            throw new IllegalArgumentException("входящий массив не должен быть null");
+        }
         for (int i = 1; i < a.length; i++) {
             for (int j = i; j > 0; j--) {
                 if (a[j - 1] > a[j]) {
@@ -35,36 +34,17 @@ public class InsertionSort {
     }
 
     /**
-     * Метод {@code isSorted(Integer[])} проверяет переданный ему массив на упорядоченность:
-     * он возвращает <tt>true</tt>, если массив отсортирован, и <tt>false</tt>, если массив не отсортирован.
+     *  Выводит содержимое переданного массива в консоль построчно.
      *
-     * @param a массив объектов класса {@code Integer}, который нужно проверить на упорядоченность
-     * @return логическое значение <tt>true</tt>, если массив отсортирован, и <tt>false</tt> в противном случае
+     * @param a массив объектов класса {@code Integer}, который нужно вывести
      */
-    private static boolean isSorted(Integer[] a) {
-        for (int i = 1; i < a.length; i++) {
-            if (a[i] < a[i - 1]) {
-                return false;
-            }
+    public void print(Integer[] a) {
+        if (a == null) {
+            throw new IllegalArgumentException("входящий массив не должен быть null");
         }
-        return true;
-    }
-
-    /**
-     * Метод {@code main(String[])} получает из командной строки количество элементов в массиве,
-     * создаёт массив объектов класса {@code Integer} и заполняет его случайными числами с помощью
-     * генератора случайных чисел, объявленного как переменная класса, производит автоматическую обёртку,
-     * затем сортирует этот массив алгоритмом сортировки вставками и проверяет результат.
-     *
-     * @param args аргументы командной строки
-     */
-    public static void main(String[] args) {
-        int n = Integer.parseInt(args[0]); // количество элементов в массиве передаётся из командной строки
-        Integer[] a = new Integer[n]; // объявление и создание массива объектов класса Integer
-        for (int i = 0; i < n; i++) {
-            a[i] = random.nextInt(); // заполнение массива случайными числами из диапазона типа int
+        for (Integer integer : a) {
+            System.out.print(integer + " ");
         }
-        sort(a); // сортировка массива
-        System.out.println(isSorted(a) ? "Массив отсортирован" : "Массив не отсортирован"); // проверка
+        System.out.println();
     }
 }

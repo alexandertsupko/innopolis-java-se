@@ -14,26 +14,31 @@ public class TextFileGenerator {
     private static final char[] PUNCTUATION_MARKS = {'.', '!', '?'}; // возможные знаки в конце предложения
 
     /**
+     * Генерирует слово, состоящее из случайно выбранных строчных латинских букв.
+     * Длина слова выбирается в пределах от 1 до 15 букв.
      *
-     *
-     * @return
+     * @return объект класса {@code String}, представляющий слово
      */
     public static String generateWord() {
         StringBuilder word = new StringBuilder();
-        for (int i = 0, word_length = (int) (Math.random() * 15) + 1; i < word_length; i++) {
-            word.append((char) (START_LETTER + (int) (Math.random() * ALPHABET_SIZE)));
+        for (int i = 0, word_length = random.nextInt(15) + 1; i < word_length; i++) {
+            word.append((char) (START_LETTER + random.nextInt(ALPHABET_SIZE)));
         }
         return word.toString();
     }
 
     /**
+     * Генерирует предложение, состоящее из случайно сгенерированных методом {@code generateWord()} слов,
+     * разделённых случайным образом запятыми. Между словами с возможной запятой стоят пробелы.
+     * Предложение заканчивается случайно выбранным знаком: либо точкой, либо восклицательным знаком,
+     * либо вопросительным знаком. После предложения ставится пробел. Первая буква предложения заглавная.
+     * Длина предложения выбирается в пределах от 1 до 15 слов.
      *
-     *
-     * @return
+     * @return объект класса {@code String}, представляющий предложение
      */
     public static String generateSentence() {
         StringBuilder sentence = new StringBuilder();
-        for (int i = 0, sentence_length = (int) (Math.random() * 15) + 1; i < sentence_length; i++) {
+        for (int i = 0, sentence_length = random.nextInt(15) + 1; i < sentence_length; i++) {
             sentence.append(generateWord());
             if (i != sentence_length - 1) {
                 if (random.nextBoolean()) {
@@ -48,13 +53,15 @@ public class TextFileGenerator {
     }
 
     /**
+     * Генерирует абзац, состоящий из случайно сгенерированных методом {@code generateSentence()} предложений.
+     * Абзац заканчивается символом новой строки и возвратом каретки.
+     * Длина абзаца выбирается в пределах от 1 до 20 предложений.
      *
-     *
-     * @return
+     * @return объект класса {@code String}, представляющий абзац
      */
     public static String generateParagraph() {
         StringBuilder paragraph = new StringBuilder();
-        for (int i = 0, paragraph_length = (int) (Math.random() * 20) + 1; i < paragraph_length; i++) {
+        for (int i = 0, paragraph_length = random.nextInt(20) + 1; i < paragraph_length; i++) {
             paragraph.append(generateSentence());
         }
         paragraph.append('\n').append('\r');
@@ -85,9 +92,9 @@ public class TextFileGenerator {
      * @param probability
      */
     private static void generateCustomParagraph(String[] words, int probability) {
-        for (int i = 0, paragraph_length = (int) (Math.random() * 20) + 1; i < paragraph_length; i++) {
+        for (int i = 0, paragraph_length = random.nextInt(20) + 1; i < paragraph_length; i++) {
             StringBuilder sentence = new StringBuilder();
-            for (int j = 0, sentence_length = (int) (Math.random() * 15) + 1; j < sentence_length; j++) {
+            for (int j = 0, sentence_length = random.nextInt(15) + 1; j < sentence_length; j++) {
                 if (Math.random() < 1.0 / probability) {
                     sentence.append(words[random.nextInt(words.length)]);
                 } else {

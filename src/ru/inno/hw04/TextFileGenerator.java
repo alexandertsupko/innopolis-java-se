@@ -1,5 +1,7 @@
 package ru.inno.hw04;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Random;
 
 /**
@@ -8,9 +10,10 @@ import java.util.Random;
  * @author Александр Цупко
  */
 public class TextFileGenerator {
+    private static Random random = new Random(); // генератор псевдослучайных чисел
     private static final char START_LETTER = 'a'; // начальная строчная латинская буква
     private static final int ALPHABET_SIZE = 26; // количество букв латинского алфавита
-    private static Random random = new Random(); // генератор псевдослучайных чисел
+    private static final String PATH = "./src/ru/inno/hw04/file"; // путь, в котором нужно создать файлы
     private static final char[] PUNCTUATION_MARKS = {'.', '!', '?'}; // возможные знаки в конце предложения
 
     /**
@@ -28,74 +31,44 @@ public class TextFileGenerator {
     }
 
     /**
-     * Генерирует предложение, состоящее из случайно сгенерированных методом {@code generateWord()} слов,
-     * разделённых случайным образом запятыми. Между словами с возможной запятой стоят пробелы.
-     * Предложение заканчивается случайно выбранным знаком: либо точкой, либо восклицательным знаком,
-     * либо вопросительным знаком. После предложения ставится пробел. Первая буква предложения заглавная.
-     * Длина предложения выбирается в пределах от 1 до 15 слов.
+     * Записывает в {@code n} файлов, находящихся по пути {@code path}, {@code size} абзацев,
+     * сгенерированных в конечном счёте с помощью метода {@code generateWord()} по алгоритму,
+     * заложенному в методах {@code generateSentence()} и {@code generateParagraph()}, но
+     * так, что в среднем каждое {@code probability} слово (каждое второе, третье, четвёртое и т. д.)
+     * в этих абзацах взято из переданного в аргументе {@code words} массива слов.
      *
-     * @return объект класса {@code String}, представляющий предложение
-     */
-    public static String generateSentence() {
-        StringBuilder sentence = new StringBuilder();
-        for (int i = 0, sentence_length = random.nextInt(15) + 1; i < sentence_length; i++) {
-            sentence.append(generateWord());
-            if (i != sentence_length - 1) {
-                if (random.nextBoolean()) {
-                    sentence.append(',');
-                }
-                sentence.append(' ');
-            }
-        }
-        sentence.setCharAt(0, Character.toUpperCase(sentence.charAt(0)));
-        sentence.append(PUNCTUATION_MARKS[random.nextInt(3)]).append(' ');
-        return sentence.toString();
-    }
-
-    /**
-     * Генерирует абзац, состоящий из случайно сгенерированных методом {@code generateSentence()} предложений.
-     * Абзац заканчивается символом новой строки и возвратом каретки.
-     * Длина абзаца выбирается в пределах от 1 до 20 предложений.
-     *
-     * @return объект класса {@code String}, представляющий абзац
-     */
-    public static String generateParagraph() {
-        StringBuilder paragraph = new StringBuilder();
-        for (int i = 0, paragraph_length = random.nextInt(20) + 1; i < paragraph_length; i++) {
-            paragraph.append(generateSentence());
-        }
-        paragraph.append('\n').append('\r');
-        return paragraph.toString();
-    }
-
-    /**
-     *
-     *
-     * @param path
-     * @param n
-     * @param size
-     * @param words
-     * @param probability
+     * @param path путь, в котором нужно создать {@code n} выходных файлов
+     * @param n количество выходных файлов
+     * @param size количество абзацев в этих файлах
+     * @param words массив слов, из которого с заданной вероятностью выбирается случайное слово
+     * @param probability целое порядковое число, показывающее как часто следует брать слово из {@code words}
      */
     public static void getFiles(String path, int n, int size, String[] words, int probability) {
         for (int i = 0; i < n; i++) { // количество файлов
-            for (int j = 0; j < size; j++) { // количество абзацев
-                generateCustomParagraph(words, probability);
+            try (PrintWriter writer = new PrintWriter(path + i + ".txt")) {
+                for (int j = 0; j < size; j++) { // количество абзацев
+                    generateCustomParagraph(words, probability, writer);
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
         }
     }
 
     /**
+     * Генерирует абзац, в котором любое слово из {@code words} может встретиться в среднем через каждые
+     * {@code probability} слов, то есть с вероятностью, равной {@code 1 / probability}.
+     * Слова не из массива {@code words} генерируются методом {@code generateWord()}.
      *
-     *
-     * @param words
-     * @param probability
+     * @param words массив слов, из которого с заданной вероятностью выбирается случайное слово
+     * @param probability целое порядковое число, показывающее как часто следует брать слово из {@code words}
+     * @param writer объект, с помощью которого происходит запись в файлы
      */
-    private static void generateCustomParagraph(String[] words, int probability) {
+    private static void generateCustomParagraph(String[] words, int probability, PrintWriter writer) {
         for (int i = 0, paragraph_length = random.nextInt(20) + 1; i < paragraph_length; i++) {
             StringBuilder sentence = new StringBuilder();
             for (int j = 0, sentence_length = random.nextInt(15) + 1; j < sentence_length; j++) {
-                if (Math.random() < 1.0 / probability) {
+                if (random.nextDouble() < 1.0 / probability) {
                     sentence.append(words[random.nextInt(words.length)]);
                 } else {
                     sentence.append(generateWord());
@@ -109,9 +82,9 @@ public class TextFileGenerator {
             }
             sentence.setCharAt(0, Character.toUpperCase(sentence.charAt(0)));
             sentence.append(PUNCTUATION_MARKS[random.nextInt(3)]).append(' ');
-            System.out.print(sentence);
+            writer.print(sentence);
         }
-        System.out.println('\r');
+        writer.println('\r');
     }
 
     /**
@@ -120,11 +93,12 @@ public class TextFileGenerator {
      * @param args аргументы командной строки
      */
     public static void main(String[] args) {
-        getFiles("", 1, 2, new String[]{"a", "b", "c"}, 5);
-//        for (int i = 0; i < 2; i++) {
-//            System.out.println(generateWord());
-//            System.out.println(generateSentence());
-//            System.out.println(generateParagraph());
-//        }
+        // количество слов в массиве words либо передаётся из командной строки, либо выбирается от 1 до 1 000
+        int wordsQuantity = args.length > 0 ? Integer.parseInt(args[0]) : random.nextInt(1_000) + 1;
+        String[] words = new String[wordsQuantity]; // создание массива words и инициализация null
+        for (int i = 0; i < wordsQuantity; i++) {
+            words[i] = generateWord(); // заполнение массива words случайными словами
+        }
+        getFiles(PATH, 3, 10, words, 5); // вызов тестируемого метода
     }
 }

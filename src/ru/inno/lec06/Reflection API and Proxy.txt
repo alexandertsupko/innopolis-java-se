@@ -1,0 +1,14 @@
+There are four ways to get a Class object:
+1. a.getClass();
+2. MyClass.class;
+3. Class.forName("java.lang.Byte");
+4. ClassLoader.loadClass();
+
+Reflection API allows the following:
+getName();
+getSimpleName;
+getModifiers();
+getSuperClass();
+...
+
+Reflection API should be used while working with the annotations

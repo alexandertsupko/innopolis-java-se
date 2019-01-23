@@ -1,0 +1,1 @@
+package PACKAGE;public class SIMPLE_NAME implements Worker{@Override public void doWork(){System.out.println("Hello, World!");}}

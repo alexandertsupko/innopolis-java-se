@@ -1,5 +1,0 @@
-<object type=Human>
-	<field type=String />
-	<field type=String />
-	<field type=int />
-</object>

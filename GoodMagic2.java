@@ -1,1 +1,0 @@
-package ru.inno.lec07;public class GoodMagic2 {{System.out.println("Хоттабыч2");}}

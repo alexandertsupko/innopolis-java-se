@@ -1,6 +1,9 @@
 package ru.inno.hw05;
 
+import jdk.nashorn.api.scripting.URLReader;
+
 import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -49,22 +52,24 @@ public class FindGivenWordsInTheSources {
     }
 
     private static Void findGivenWordsInTheSource(BlockingQueue<String> queue, Writer writer, String source) {
-        String[] sentences = source.split("[.?!]");
-        for (String sentence : sentences) {
-            sentence = sentence.trim();
-            if (sentence.isEmpty()) {
-                continue;
-            }
-            String sentenceLowerCase = sentence.toLowerCase();
-            for (String word : queue) {
-                if (sentenceLowerCase.contains(word)) {
-                    try {
+        try (BufferedReader bufferedReader = new BufferedReader(new URLReader(new URL(source)))) {
+            StringBuilder contents = new StringBuilder();
+            bufferedReader.lines().forEach(contents::append);
+            String[] sentences = contents.toString().split("[.?!]");
+            for (String sentence : sentences) {
+                sentence = sentence.trim();
+                if (sentence.isEmpty()) {
+                    continue;
+                }
+                String sentenceLowerCase = sentence.toLowerCase();
+                for (String word : queue) {
+                    if (sentenceLowerCase.contains(word)) {
                         writer.append(sentence).append('\n');
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
                 }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -75,15 +80,15 @@ public class FindGivenWordsInTheSources {
      * @param args аргументы командной строки
      */
     public static void main(String[] args) throws IOException {
-        getOccurrences(
-                new String[] {
-                        "This is - my first source? And this is: the второе sentence. ",
-                        " This is \"the second источник\"... And here is его 'second sentence', too!"
-                },
-                new String[] {
-                        "This", "apple", "too"
-                }, "./result.txt"
-        );
+//        getOccurrences(
+//                new String[] {
+//                        "This is - my first source? And this is: the второе sentence. ",
+//                        " This is \"the second источник\"... And here is его 'second sentence', too!"
+//                },
+//                new String[] {
+//                        "This", "apple", "too"
+//                }, "./src/ru/inno/hw05/result.txt"
+//        );
 //        String[] sources = new String[1];
 //        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("/Users/aleksandrtsupko/Downloads/war+peace.txt"))) {
 //            StringBuilder stringBuilder = new StringBuilder();
@@ -93,6 +98,12 @@ public class FindGivenWordsInTheSources {
 //            }
 //            sources[0] = stringBuilder.toString();
 //        }
-//        getOccurrences(sources, new String[]{"Petersburg"}, "./war+peace_Petersburg.txt");
+//        getOccurrences(sources, new String[]{"Petersburg"}, "./src/ru/inno/hw05/war+peace_Petersburg.txt");
+        String[] sources = new String[100];
+        for (int i = 0; i < sources.length; i++) {
+            int id = ThreadLocalRandom.current().nextInt(50_000); // 1342 Jane Austen
+            sources[i] = "http://gutenberg.org/zipcat2.php/" + id + "/" + id + "-0.txt";
+        }
+        getOccurrences(sources, new String[]{"the"}, "./src/ru/inno/hw05/res.txt");
     }
 }

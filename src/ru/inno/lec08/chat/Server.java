@@ -9,7 +9,7 @@ import java.util.List;
 public class Server {
     public static final int PORT = 3232;
     private static List<Client> clients = new ArrayList<>();
-    private static final String STOP_COMMAND = "exit";
+    private static final String STOP_COMMAND = "quit";
 
     public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = new ServerSocket(PORT);

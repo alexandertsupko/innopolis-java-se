@@ -1,5 +1,5 @@
 <object type="Human">
-	<field type="String" />
-	<field type="String" />
-	<field type="int" />
+	<field type="String" name="human" value="Гуманоид" />
+	<field type="String" name="name" value="Вася" />
+	<field type="int" name="money" value="100" />
 </object>

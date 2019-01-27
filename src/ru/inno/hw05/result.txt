@@ -1,4 +1,0 @@
-This is - my first source
-This is "the second источник"
-And here is его 'second sentence', too
-And this is: the второе sentence

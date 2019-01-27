@@ -11,10 +11,8 @@ import java.util.Random;
  */
 public class TextFileGenerator {
     private static Random random = new Random(); // генератор псевдослучайных чисел
-    private static final char START_LETTER = 'a'; // начальная строчная латинская буква
-    private static final int ALPHABET_SIZE = 26; // количество букв латинского алфавита
-    private static final String PATH = "./src/ru/inno/hw04/file"; // путь, в котором нужно создать файлы
-    private static final char[] PUNCTUATION_MARKS = {'.', '!', '?'}; // возможные знаки в конце предложения
+
+    private final char[] PUNCTUATION_MARKS = {'.', '!', '?'}; // возможные знаки в конце предложения
 
     /**
      * Генерирует слово, состоящее из случайно выбранных строчных латинских букв.
@@ -22,9 +20,13 @@ public class TextFileGenerator {
      *
      * @return объект класса {@code String}, представляющий слово
      */
-    public static String generateWord() {
+    public String generateWord() {
         StringBuilder word = new StringBuilder();
         for (int i = 0, word_length = random.nextInt(15) + 1; i < word_length; i++) {
+            // начальная строчная латинская буква
+            char START_LETTER = 'a';
+            // количество букв латинского алфавита
+            int ALPHABET_SIZE = 26;
             word.append((char) (START_LETTER + random.nextInt(ALPHABET_SIZE)));
         }
         return word.toString();
@@ -43,7 +45,7 @@ public class TextFileGenerator {
      * @param words массив слов, из которого с заданной вероятностью выбирается случайное слово
      * @param probability целое порядковое число, показывающее как часто следует брать слово из {@code words}
      */
-    public static void getFiles(String path, int n, int size, String[] words, int probability) {
+    public void getFiles(String path, int n, int size, String[] words, int probability) {
         for (int i = 0; i < n; i++) { // количество файлов
             try (PrintWriter writer = new PrintWriter(path + i + ".txt")) {
                 for (int j = 0; j < size; j++) { // количество абзацев
@@ -64,7 +66,7 @@ public class TextFileGenerator {
      * @param probability целое порядковое число, показывающее как часто следует брать слово из {@code words}
      * @param writer объект, с помощью которого происходит запись в файлы
      */
-    private static void generateCustomParagraph(String[] words, int probability, PrintWriter writer) {
+    private void generateCustomParagraph(String[] words, int probability, PrintWriter writer) {
         for (int i = 0, paragraph_length = random.nextInt(20) + 1; i < paragraph_length; i++) {
             StringBuilder sentence = new StringBuilder();
             for (int j = 0, sentence_length = random.nextInt(15) + 1; j < sentence_length; j++) {
@@ -85,20 +87,5 @@ public class TextFileGenerator {
             writer.print(sentence);
         }
         writer.println('\r');
-    }
-
-    /**
-     * Тестирующий клиент.
-     *
-     * @param args аргументы командной строки
-     */
-    public static void main(String[] args) {
-        // количество слов в массиве words либо передаётся из командной строки, либо выбирается от 1 до 1 000
-        int wordsQuantity = args.length > 0 ? Integer.parseInt(args[0]) : random.nextInt(1_000) + 1;
-        String[] words = new String[wordsQuantity]; // создание массива words и инициализация null
-        for (int i = 0; i < wordsQuantity; i++) {
-            words[i] = generateWord(); // заполнение массива words случайными словами
-        }
-        getFiles(PATH, 3, 10, words, 5); // вызов тестируемого метода
     }
 }

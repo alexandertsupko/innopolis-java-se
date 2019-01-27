@@ -1,6 +1,9 @@
 package ru.inno.hw03;
 
-import java.util.*;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Домашняя работа №3 к теме "Collections Framework. Обобщённые типы".
@@ -8,8 +11,10 @@ import java.util.*;
  * @param <T> обобщённый тип элементов, хранимых в подлежащей коллекции, который является подклассом {@code Number}
  * @author Александр Цупко
  */
-public class MathBox<T extends Number> extends ObjectBox<T> {
+public class MathBox<T extends Number & Comparable> extends ObjectBox<T> {
     private Set<T> set = new TreeSet<>(); // элементы не должны повторяться и должны быть отсортированы
+    // формула вычисления хэш-кода даёт значения в диапазоне [-2 ^ 31 + 1 .. 2 ^ 31 - 1]
+    private final int HASH_CODE = (int) (Math.random() * Integer.MIN_VALUE * (Math.random() < 0.5 ? -1 : 1));
 
     public MathBox(T[] a) {
         set.addAll(Arrays.asList(a)); // 1. Элементы внутри конструктора раскладываются в подходящую коллекцию
@@ -36,9 +41,9 @@ public class MathBox<T extends Number> extends ObjectBox<T> {
      * @return коллекция вещественных чисел, результатов от деления каждого элемента на переданный делитель
      */
     public Set<? extends Number> splitter(Double divisor) {
-        Set<Double> set = new TreeSet<>();
+        Set<BigDecimal> set = new TreeSet<>();
         for (T element : this.set) {
-            set.add(element.doubleValue() / divisor);
+            set.add(BigDecimal.valueOf(element.doubleValue() / divisor));
         }
         return set;
     }
@@ -50,12 +55,12 @@ public class MathBox<T extends Number> extends ObjectBox<T> {
      */
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("Содержимое исходной коллекции: [ ");
+        StringBuilder contents = new StringBuilder("Содержимое исходной коллекции: [ ");
         for (T element : this.set) {
-            stringBuilder.append(element).append(' ');
+            contents.append(element).append(' ');
         }
-        stringBuilder.append(']');
-        return stringBuilder.toString();
+        contents.append(']');
+        return contents.toString();
     }
 
     /**
@@ -79,7 +84,7 @@ public class MathBox<T extends Number> extends ObjectBox<T> {
      */
     @Override
     public int hashCode() {
-        return 0; // Objects.hash(set); мы не можем основывать вычисление хэш-кода на коллекции
+        return HASH_CODE; // мы не можем основывать вычисление хэш-кода на коллекции
     }
 
     /**

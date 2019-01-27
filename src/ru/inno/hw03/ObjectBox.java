@@ -1,7 +1,7 @@
 package ru.inno.hw03;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.TreeSet;
 
 /**
  * Инкапсулирует некоторую общую коллекцию элементов некоторого, заранее неизвестного типа,
@@ -10,8 +10,8 @@ import java.util.Collections;
  * @param <T> обобщённый тип элементов, хранимых в подлежащей коллекции
  * @author Александр Цупко
  */
-public class ObjectBox<T> {
-    private Collection<T> collection = Collections.EMPTY_SET;
+public class ObjectBox<T extends Comparable> {
+    private Collection<T> collection = new TreeSet<>();
 
     /**
      * Добавляет в коллекцию переданный в аргументе объект.

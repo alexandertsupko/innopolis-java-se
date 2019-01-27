@@ -15,21 +15,17 @@ import java.util.concurrent.*;
  */
 public class FindGivenWordsInTheSources {
     /**
-     * Находит вхождения всех слов из данного массива в данные текстовые источники,
-     * при этом записывает в файл по данному адресу предложения, в которых встретилось какое-либо слово.
-     * <p>
-     * Предложение - это последовательность слов, состоящих из кириллических или латинских символов,
-     * начинающаяся с заглавной буквы и заканчивающаяся точкой, вопросительным или восклицательным знаками,
-     * или многоточием. Внутри предложения могут находиться знаки препинания.
-     * <p>
-     * Ограничения: размеры обоих массивов не могут превышать 2000 элементов.
-     * Ресурсы могут быть размером от 1 кБ до 1 ГБ.
+     * Преобразует переданный массив слов в блокирующую очередь из этих слов в нижнем регистре,
+     * чтобы только один поток мог её проходить впоследствии.
+     * Запускает {@code ExecutorService}, в который передаются задачи:
+     * по одной задаче на каждый поток, количество потоков определяется количеством источников.
+     * Затем метод ожидает окончания выполнения всех задач.
      *
      * @param sources массив адресов источников (файлы, FTP, web-ссылки)
      * @param words   массив искомых слов
      * @param res     адрес файла для записи результата
      */
-    public static void getOccurrences(String[] sources, String[] words, String res) {
+    public void getOccurrences(String[] sources, String[] words, String res) {
         BlockingQueue<String> queue = new ArrayBlockingQueue<>(words.length);
         for (String word : words) {
             queue.add(word.toLowerCase());
@@ -51,7 +47,17 @@ public class FindGivenWordsInTheSources {
         }
     }
 
-    private static Void findGivenWordsInTheSource(BlockingQueue<String> queue, Writer writer, String source) {
+    /**
+     * Находит вхождения всех слов из данной блокирующей очереди в данный текстовый источник,
+     * при этом записывает с помощью переданного извне потока вывода предложения, в которых
+     * встретилось какое-либо слово.
+     *
+     * @param queue  блокирующая очередь для того, чтобы только один поток мог её проходить
+     * @param writer переданный извне поток вывода, в который записываются результаты
+     * @param source адрес текстового источника
+     * @return обёртка типа {@code void}
+     */
+    private Void findGivenWordsInTheSource(BlockingQueue<String> queue, Writer writer, String source) {
         try (BufferedReader bufferedReader = new BufferedReader(new URLReader(new URL(source)))) {
             StringBuilder contents = new StringBuilder();
             bufferedReader.lines().forEach(contents::append);
@@ -64,7 +70,7 @@ public class FindGivenWordsInTheSources {
                 String sentenceLowerCase = sentence.toLowerCase();
                 for (String word : queue) {
                     if (sentenceLowerCase.contains(word)) {
-                        writer.append(sentence).append('\n');
+                        writer.append(sentence).append(System.lineSeparator());
                     }
                 }
             }
@@ -72,38 +78,5 @@ public class FindGivenWordsInTheSources {
             e.printStackTrace();
         }
         return null;
-    }
-
-    /**
-     * Тестирующий клиент.
-     *
-     * @param args аргументы командной строки
-     */
-    public static void main(String[] args) throws IOException {
-//        getOccurrences(
-//                new String[] {
-//                        "This is - my first source? And this is: the второе sentence. ",
-//                        " This is \"the second источник\"... And here is его 'second sentence', too!"
-//                },
-//                new String[] {
-//                        "This", "apple", "too"
-//                }, "./src/ru/inno/hw05/result.txt"
-//        );
-//        String[] sources = new String[1];
-//        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("/Users/aleksandrtsupko/Downloads/war+peace.txt"))) {
-//            StringBuilder stringBuilder = new StringBuilder();
-//            String line;
-//            while ((line = bufferedReader.readLine()) != null) {
-//                stringBuilder.append(line).append(' ');
-//            }
-//            sources[0] = stringBuilder.toString();
-//        }
-//        getOccurrences(sources, new String[]{"Petersburg"}, "./src/ru/inno/hw05/war+peace_Petersburg.txt");
-        String[] sources = new String[100];
-        for (int i = 0; i < sources.length; i++) {
-            int id = ThreadLocalRandom.current().nextInt(50_000); // 1342 Jane Austen
-            sources[i] = "http://gutenberg.org/zipcat2.php/" + id + "/" + id + "-0.txt";
-        }
-        getOccurrences(sources, new String[]{"the"}, "./src/ru/inno/hw05/res.txt");
     }
 }

@@ -13,10 +13,13 @@ public class RuntimeCompilerAndLoader {
     private static final String STOP_COMMAND = "exit";
 
     public static void main(String[] args) {
-        StringBuilder sourceCode = new StringBuilder("package " + PACKAGE.getString() + ";");
+        StringBuilder sourceCode = new StringBuilder(
+                PACKAGE.getString().isEmpty() ? "" : "package " + PACKAGE.getString() + ";"
+        );
         sourceCode
-                .append("public class ").append(SIMPLE_NAME.getString()).append(" implements Worker{")
-                .append("@Override public void doWork(){");
+                .append("public class ").append(SIMPLE_NAME.getString())
+                .append(" implements ").append(PACKAGE_SOURCE.getString()).append("Worker {")
+                .append("@Override public void doWork() {");
         // читаем реализацию метода doWork() построчно из консоли с помощью класса Scanner
         try (Scanner scanner = new Scanner(System.in)) {
             System.out.println("Введите реализацию метода doWork(), а затем " + STOP_COMMAND + ":");

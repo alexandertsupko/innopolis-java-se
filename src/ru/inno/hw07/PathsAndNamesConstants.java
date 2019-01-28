@@ -1,12 +1,17 @@
 package ru.inno.hw07;
 
+/**
+ * Вспомогательное перечисление, хранящее часто используемые строковые константы для путей и имён.
+ *
+ * @author Александр Цупко
+ */
 public enum PathsAndNamesConstants {
     FILE_SEPARATOR(System.getProperty("file.separator")),
-    PACKAGE_SOURCE("ru.inno.hw07."),
-    PACKAGE(""),
+    PACKAGE("ru.inno.hw07."),
     SIMPLE_NAME("SomeClass"),
-    FULLY_QUALIFIED_NAME(PACKAGE.string + (PACKAGE.string.isEmpty() ? "" : ".") + SIMPLE_NAME.string),
-    PATH("." + FILE_SEPARATOR.string + "src" + FILE_SEPARATOR.string),
+    PATH("." + FILE_SEPARATOR.string + "out" + FILE_SEPARATOR.string + "production" + FILE_SEPARATOR.string
+            + "untitled" + FILE_SEPARATOR.string + "ru" + FILE_SEPARATOR.string + "inno" + FILE_SEPARATOR.string
+            + "hw07" + FILE_SEPARATOR.string),
     FILE_NAME(SIMPLE_NAME.string + ".java"),
     FULLY_QUALIFIED_FILE_NAME(PATH.string + "" + FILE_NAME.string),
     BYTE_NAME(SIMPLE_NAME.string + ".class"),

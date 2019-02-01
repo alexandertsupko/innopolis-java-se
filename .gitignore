@@ -1,6 +1,8 @@
 .idea
-out
+target
 *.iml
+*.log
+*.jar
 *.txt
 *.class
 *.bin

@@ -11,7 +11,7 @@ import java.util.Collection;
 
 public class CourseDAOImpl implements CourseDAO {
 
-    public static final String INSERT_PERSON_SQL_TEMPLATE = "insert into person (name, birthdate) values (?, ?)";
+    public static final String INSERT_PERSON_SQL_TEMPLATE = "insert into person (name, birth_date) values (?, ?)";
     private final Connection connection;
 
     public CourseDAOImpl(Connection connection) {
@@ -47,7 +47,7 @@ public class CourseDAOImpl implements CourseDAO {
     public void createPerson(Person person) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(INSERT_PERSON_SQL_TEMPLATE)) {
             statement.setString(1, person.getName());
-            statement.setDate(2, new Date(person.getBirthdate()));
+            statement.setDate(2, new Date(person.getBirthDate()));
             statement.execute();
         }
     }

@@ -1,4 +1,4 @@
-package ru.inno.lec12.entity;
+package ru.inno.hw12.entity;
 
 import java.sql.Date;
 import java.util.Objects;
@@ -7,6 +7,16 @@ public class Person {
     private int id;
     private String name;
     private long birthDate;
+
+    public Person(int id, String name, long birthDate) {
+        this.id = id;
+        this.name = name;
+        this.birthDate = birthDate;
+    }
+
+    public Person() {
+
+    }
 
     public int getId() {
         return id;
@@ -28,8 +38,8 @@ public class Person {
         return birthDate;
     }
 
-    public void setBirthDate(long birthdate) {
-        this.birthDate = birthdate;
+    public void setBirthDate(long birthDate) {
+        this.birthDate = birthDate;
     }
 
     @Override

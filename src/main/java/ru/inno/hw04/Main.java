@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author Александр Цупко
  */
 public class Main {
-    private static final String PATH = "./src/ru/inno/hw04/"; // путь, в котором нужно создать файлы
+    private static final String PATH = "./target/classes/ru/inno/hw04/"; // путь, в котором нужно создать файлы
 
     /**
      * Тестирующий клиент.

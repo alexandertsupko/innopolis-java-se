@@ -3,6 +3,7 @@ package ru.inno.hw04;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Домашняя работа №4 к теме "Пакет java.io и работа с ресурсами".
@@ -10,9 +11,9 @@ import java.util.Random;
  * @author Александр Цупко
  */
 public class TextFileGenerator {
-    private static Random random = new Random(); // генератор псевдослучайных чисел
+    private static Random random = ThreadLocalRandom.current(); // генератор псевдослучайных чисел
 
-    private final char[] PUNCTUATION_MARKS = {'.', '!', '?'}; // возможные знаки в конце предложения
+    private static final char[] PUNCTUATION_MARKS = {'.', '!', '?'}; // возможные знаки в конце предложения
 
     /**
      * Генерирует слово, состоящее из случайно выбранных строчных латинских букв.
@@ -21,12 +22,12 @@ public class TextFileGenerator {
      * @return объект класса {@code String}, представляющий слово
      */
     public String generateWord() {
+        // начальная строчная латинская буква
+        final char START_LETTER = 'a';
+        // количество букв латинского алфавита
+        final int ALPHABET_SIZE = 26;
         StringBuilder word = new StringBuilder();
         for (int i = 0, word_length = random.nextInt(15) + 1; i < word_length; i++) {
-            // начальная строчная латинская буква
-            char START_LETTER = 'a';
-            // количество букв латинского алфавита
-            int ALPHABET_SIZE = 26;
             word.append((char) (START_LETTER + random.nextInt(ALPHABET_SIZE)));
         }
         return word.toString();

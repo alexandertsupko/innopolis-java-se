@@ -26,6 +26,6 @@ public class Main {
         // создаём экземпляр тестируемого класса
         FindGivenWordsInTheSources finder = new FindGivenWordsInTheSources();
         // вызываем тестируемый метод
-        finder.getOccurrences(sources, new String[]{"excruciating"}, "./src/ru/inno/hw05/result.txt");
+        finder.getOccurrences(sources, new String[]{"excruciating"}, "./target/classes/ru/inno/hw05/result.txt");
     }
 }

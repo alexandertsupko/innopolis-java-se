@@ -22,7 +22,7 @@ public class Main {
 
         Person person = new Person();
         person.setName("John Smith");
-        person.setBirthdate(System.currentTimeMillis());
+        person.setBirthDate(System.currentTimeMillis());
         dao.createPerson(person);
 
         // don't forget to close connection

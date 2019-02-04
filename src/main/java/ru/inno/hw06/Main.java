@@ -8,7 +8,7 @@ import ru.inno.lec06.entity.Human;
  * @author Александр Цупко
  */
 public class Main {
-    private static final String PATH = "./src/ru/inno/hw06/object.xml"; // путь выходного файла
+    private static final String PATH = "./target/classes/ru/inno/hw06/object.xml"; // путь выходного файла
 
     /**
      * Тестирующий клиент.

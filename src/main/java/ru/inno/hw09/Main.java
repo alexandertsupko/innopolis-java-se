@@ -19,11 +19,12 @@ public class Main {
         FindGivenWordsInTheSourcesStreamAPI example = new FindGivenWordsInTheSourcesStreamAPI();
         example.getOccurrences(
                 new String[] {
-                        "This is - my first source? And this is: the второе sentence. ",
-                        " This is \"the second источник\"... And here is его 'second sentence', too!"
+                        "This is - my firstsource? And this is : the второе sentence. ",
+                        " This is    \"the second источник\"... And here is его 'second sentence', too!"
                 },
                 new String[] {
-                        "This", "apple", "too"
-                }, null);
+                        "That", "second", "a", "first"
+                }, null
+        );
     }
 }

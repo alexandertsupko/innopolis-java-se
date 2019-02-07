@@ -4,6 +4,8 @@
 
 package ru.innopolis.homeworks.week3.homework12;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.innopolis.homeworks.week3.homework12.dao.CourseDAO;
 import ru.innopolis.homeworks.week3.homework12.dao.CourseDAOImpl;
 import ru.innopolis.homeworks.week3.homework12.entity.Person;
@@ -13,7 +15,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Main {
-    public static void main(String[] args) throws SQLException {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+
+    public static void main(String[] args) {
         String url = "jdbc:postgresql://localhost:5432/postgres";
         String login = "postgres";
         String password = "";
@@ -37,6 +41,8 @@ public class Main {
 
             dao.deletePerson(person);
             System.out.println("Final: " + dao.getAllPersons());
+        } catch (SQLException e) {
+            LOGGER.error("Error while getting connection to the database: " + e.getMessage());
         }
     }
 }

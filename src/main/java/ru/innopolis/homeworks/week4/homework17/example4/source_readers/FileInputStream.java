@@ -5,15 +5,14 @@
 package ru.innopolis.homeworks.week4.homework17.example4.source_readers;
 
 import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.net.URL;
+import java.io.FileNotFoundException;
 
-public class URLReader implements SourceReader {
+public class FileInputStream implements SourceInputStream {
     @Override
     public BufferedInputStream getInputStream(String source) {
         try {
-            return new BufferedInputStream(new URL(source).openStream());
-        } catch (IOException e) {
+            return new BufferedInputStream(new java.io.FileInputStream(source));
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         return null;

@@ -6,6 +6,6 @@ package ru.innopolis.homeworks.week4.homework17.example4.source_readers;
 
 import java.io.BufferedInputStream;
 
-public interface SourceReader {
+public interface SourceInputStream {
     BufferedInputStream getInputStream(String source);
 }

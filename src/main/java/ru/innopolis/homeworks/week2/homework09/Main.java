@@ -4,28 +4,30 @@
 
 package ru.innopolis.homeworks.week2.homework09;
 
+import java.io.IOException;
+
 /**
  * Домашняя работа №9 к теме "Нововведения в Java 7 и 8".
  *
  * @author Александр Цупко
  */
 public class Main {
+    private static final String PATH = "./src/main/resources/"; // путь к ресурсам
+    private static String[] sources = new String[] {
+            PATH + "text.txt", // файл в ресурсах
+            "http://gutenberg.org/zipcat2.php/1342/1342-0.txt" // Джейн Остин, "Гордость и предубеждение"
+    };
+    private static String[] words = new String[] {
+            "second", // искомые слова
+    };
+
     /**
-     * Тестирующий клиент.
+     * Тестирующий и отладочный клиент.
      *
      * @param args аргументы командной строки не используются
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         FindGivenWordsInTheSourcesStreamAPI example = new FindGivenWordsInTheSourcesStreamAPI();
-        example.getOccurrences(
-                new String[] {
-                        "This is - my firstsource? And this is : the второе sentence. ",
-                        " This is    \"the second источник\"... And here is его 'second sentence', too!",
-                        null, "", "-"
-                },
-                new String[] {
-                        "That", "second", "a", "first", "-", "", null
-                }, null
-        );
+        example.getOccurrences(sources, words, PATH + "res.txt");
     }
 }

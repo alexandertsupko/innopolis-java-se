@@ -4,7 +4,18 @@
 
 package ru.innopolis.homeworks.week2.homework09;
 
+import ru.innopolis.homeworks.week2.homework09.factory.FileReaderFactory;
+import ru.innopolis.homeworks.week2.homework09.factory.SourceReaderFactory;
+import ru.innopolis.homeworks.week2.homework09.factory.URLReaderFactory;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -13,38 +24,79 @@ import java.util.stream.Collectors;
  * @author Александр Цупко
  */
 public class FindGivenWordsInTheSourcesStreamAPI {
+    private Set<String> setOfSentences = new HashSet<>(); // множество всех предложений из всех источников
+
     /**
      * Находит вхождения всех слов из данного массива в данные текстовые источники
      * и записывает предложения, в которых встретилось какое-либо слово.
      *
      * @param sources массив адресов источников
-     * @param words   массив искомых слов
-     * @param res     адрес файла для записи результата
+     * @param words массив искомых слов
+     * @param res адрес файла для записи результата
      */
-    public void getOccurrences(String[] sources, String[] words, String res) {
-        Set<String> setOfWords = Collections.synchronizedSet(Arrays.stream(words)
-                .parallel() // check if it influences the performance
-                .filter(Objects::nonNull)
-                .filter(word -> !word.trim().isEmpty())
-                .map(String::trim)
-                .map(String::toLowerCase)
-                .collect(Collectors.toCollection(HashSet::new)));
-        Set<String> setOfSentences = Arrays.stream(sources)
-                .parallel() // check if it influences the performance
-                .filter(Objects::nonNull)
-                .flatMap(source -> Arrays.stream(source.split("[.!?]")))
-                .map(String::trim)
-                .collect(Collectors.toCollection(HashSet::new));
-        // todo: add ExecutorService to take every single sentence into a separate thread
-        for (String sentence : setOfSentences) {
-            synchronized (setOfWords) { // required to do so by documentation for synchronizedSet() method
-                if (Arrays.stream(sentence.split("\\W")) // non-word characters, i.e. punctuation marks
+    public void getOccurrences(String[] sources, String[] words, String res) throws IOException {
+        final Set<String> setOfWords = Collections.synchronizedSet(getSetOfWords(words));
+        getSetOfSentences(sources);
+        searchForWordsInTheSentences(setOfWords, setOfSentences, res);
+    }
+
+    private void searchForWordsInTheSentences(Set<String> setOfWords, Set<String> setOfSentences, String res) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(res))) {
+            for (String sentence : setOfSentences) {
+                if (Arrays.stream(sentence.split("\\W")) // всё, кроме букв, цифр и знаков подчёркивания
                         .map(String::toLowerCase)
                         .distinct()
                         .anyMatch(setOfWords::contains)) {
-                    System.out.println(sentence);
+                    writer.println(sentence);
                 }
-            } // check if it influences the performance
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    private void getSetOfSentences(String[] sources) {
+        ExecutorService service = null;
+        try {
+            service = Executors.newFixedThreadPool(sources.length);
+            List<Callable<Collection<String>>> tasks = new ArrayList<>(sources.length);
+            Arrays.stream(sources)
+                    .filter(Objects::nonNull)
+                    .forEach(source -> tasks.add(() -> getSentences(source)));
+            service.invokeAll(tasks);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (service != null) {
+                service.shutdown();
+            }
+        }
+    }
+
+    private Collection<String> getSentences(String source) throws IOException {
+        SourceReaderFactory readerFactory = getSourceReaderFactory(source);
+        return Arrays.stream(readerFactory.getContents(source).split("[.!?]"))
+                .map(String::trim)
+                .collect(Collectors.toCollection((Supplier<Collection<String>>) () -> setOfSentences));
+    }
+
+    private SourceReaderFactory getSourceReaderFactory(String source) throws IOException {
+        SourceReaderFactory readerFactory;
+        if (source.startsWith("http://")) {
+            readerFactory = new URLReaderFactory();
+        } else {
+            readerFactory = new FileReaderFactory();
+        }
+        return readerFactory;
+    }
+
+    private Set<String> getSetOfWords(String[] words) {
+        return Arrays.stream(words)
+                    .parallel()
+                    .filter(Objects::nonNull)
+                    .filter(word -> !word.trim().isEmpty())
+                    .map(String::trim)
+                    .map(String::toLowerCase)
+                    .collect(Collectors.toCollection(HashSet::new));
     }
 }
